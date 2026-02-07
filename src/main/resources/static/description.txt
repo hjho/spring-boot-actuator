@@ -1,0 +1,147 @@
+
+0. Spring Boot Actuator란.
+  - Spring Boot Actuator는 애플리케이션의 상태 모니터링, 메트릭 수집, 트래픽 추적 등 운영(Production) 환경에 필요한 기능을 제공하는 관리 도구입니다.
+  - HTTP 엔드포인트나 JMX를 통해 JVM 메모리, CPU 사용량, 로그백 이벤트, DB 연결 상태 등의 정보를 JSON 형식으로 손쉽게 확인하여 애플리케이션의 동작을 제어하고 분석할 수 있게 합니다.
+  - 주로 Prometheus, Grafana, Spring Boot Admin 등과 연동하여 시각화된 모니터링 환경을 구축하는 데 필수적으로 사용됩니다.
+  - 핵심 특징 및 기능:
+    - 간편한 모니터링: 별도 코드 구현 없이 의존성 추가만으로 다양한 운영 지표 제공.
+    - 엔드포인트(Endpoint) 제공: http://localhost:8080/actuator를 통해 헬스 체크(health), 메트릭(metrics), 빈 목록(beans) 등 데이터 접근.
+    - 상태 정보: jvm.memory.used(메모리 사용량), system.cpu.count(CPU 개수), http.server.requests(요청 처리) 등의 지표 수집.
+    - 운영 최적화: 시스템의 건강 상태를 진단하여 안정적인 서비스 운영 지원.
+    - 주요 활용 엔드포인트:
+      - /health: 애플리케이션의 상태(Up/Down)를 확인.
+      - /metrics: 애플리케이션의 메트릭 데이터(메모리, CPU 등)를 보여줌.
+      - /loggers: 로그 레벨을 조회하거나 운영 중에 변경 가능.
+
+1. 프로젝트 생성.
+  새 프로젝트 만들기.
+    - https://start.spring.io/
+  메이븐의 starter 란.
+    - bean 까지 만들어줌.
+    - 기본 동작이 다 동작을 해버림.
+    - 기본 설정 OK.
+    - http://localhost:8080/actuator
+  헤이티오스.
+    - 한번 찾아보기.
+    - 링크주고, 타고타서, 정보를 알수있다.
+  intellij: cannot find symbol
+    - https://intellij-support.jetbrains.com/hc/en-us/community/posts/23064675521682-Lombok-not-workin-with-Intellij
+    - 파일 > 설정 > 빌드, 실행, 배포 > 컴파일러 > 어노테이션 프로세서
+    - 어노테이션 처리 활성화 - 체크
+    - 프로세서경로의 lombok.jar 확인 또는 경로 재설정.
+
+2. 공식 가이드 페이지, 의존성라이브러리.
+  강의자료
+    - https://semtul79.tistory.com/category/spring%20boot/actuator%20in%20spring%20boot?page=2
+  스프링부트 공식 문서
+    - https://docs.spring.io/spring-boot/reference/index.html
+    - https://docs.spring.io/spring-boot/reference/actuator/enabling.html
+  메이븐
+    - 스프링부트 엑츄에이터는 micrometer-core 를 쓰고있음.
+  스프링부트 오토 컨피그레이션 기능
+    - @ConditionalOnMissionBean, @ConditionalOnClass
+    - 기능으로 특정 클래스가 있으면 Bean 으로 생성해줌.
+    - 리소스 낭비를 줄이기 위해.
+
+3. 엔드포인트 설정.
+  엔드포인트란
+    - 엔드포인트는 정보를 얻을수 있는 링크. 정확히는 url 을 actuator 에서는 endpoint 라고 부릅니다.
+    - 즉, http://localhost:8080/actuator/health <-- 이런 url 이 각각 endpoint 가 됩니다.
+  보이는 엔드포인트가 적은 이유?
+    - actuator 에서는 java version, OS 버전 과 같은 다양한 정보를 제공해주는데
+    - 이런 정보는 누구에게나 open 되면 보안상 좋지 않기에,
+    - spring boot 에서는 default 설정으로는 위와 같이 2~3개로 제한시켜져 있기 때문입니다.
+  기본 제공되는 endpoints
+    - https://docs.spring.io/spring-boot/reference/actuator/endpoints.html#actuator.endpoints
+    - beans, caches, conditions, health, info, metrics, logger, quartz
+  활성화설정, 노출설정.
+    - endpoint 는 enable/disable (활성화 여부)과 expose ( 노출 여부 ) 라는 2가지 설정을 할 수 있으며 2가지 모두 켜진 상태여야 외부로 노출이 됩니다.
+    - default 설정으로 활성화된 endpoint 는 shutdown 이라는 endpoint 를 제외하고 모두 활성화 되어 있습니다.
+    - endpoint 는 각각의 활성화, endpoints 는 노출 관련.
+    - 특정 엔드포인트는 Requires 로 자동으로 활성화되려면 요구조건이 있다.
+    - properties 파일에서는 * 는 허용하지만, yml은 "*" 으로 해야 함.
+  보안 문제.
+    - spring security 를 통해 /actuator url 에 대해 http basic auth 을 적용해서 id, pw 가 맞아야만 pass 되도록 하면 됨.
+    - spring security http basic auth 라고 구글링 하면 많은 정보가 나옴
+  캐시
+    - 각 활설화 설정(endpoint)에서 캐시 값을 설정 할 수 있음.
+  CORS
+    - 간혹 web 화면에서 endpoint 를 호출해야할 수도 있습니다.
+    - 노출 설정(endpoints)에서 cors를 허용할 수 있음.
+
+4. 커스텀 엔드포인트.
+  실무에서 사내 정책에 따라 사내 전용 endpoint 가 필요한 경우가 있습니다.
+  가이드
+    - https://docs.spring.io/spring-boot/reference/actuator/endpoints.html#actuator.endpoints.implementing-custom
+  실습
+    - MyLibraryInfoEndpoint.java
+    - 현재 app에서 사용중인 라이브러리들의 이름과 버전정보를 응답으로 리턴하는 custom endpoint 를 만들 필요가 있다고 가정.
+    - class
+      - @Endpoint(id = "myLibraryInfo")
+      - 엔드포인트는 value가 없어서 id를 지정해야함.
+      - @WebEndpoint 로 web에서만 동작하게 만들 수 있음. (jmx는 안됨)
+    - method
+      - @ReadOperation: GET
+        - @Selector 를 통해 Pathvariable 가능.
+      - @WriteOperation: POST
+        - dto는 안됨.
+      - @DeleteOperation: DELETE
+    - config
+      - MyLibraryInfoEndpointConfig.java
+      - 대신 @Component 써도됨.
+    - @Nullable
+      - org.springframework.lang.Nullable 을 써야 정상동작.
+    - 권장하지 않음
+      - @RestControllerEndpoint, @ServletEndpoint
+  결국 rest controller 를 만들면 되는거니 굳이 actuator 가 아닌 직접 rest controller 만들면 되지 않나?
+    - 그러나 직접 rest controller 로 만들어버리면,
+    - prometheus 와 같은  actuator 와 호환이 되는 여러 라이브러리와 연동이 될수 없습니다.
+    - 즉 actuator 가 일종의 인터페이스 역할이므로 다른 라이브러리와의 연동을 위해 actuator 를 이용하는게 좋습니다.
+
+5. 헬스 엔드포인트.
+  management.endpoint.health
+    - show-components:
+      - ALWAYS, NEVER, WHEN_AUTHORIZED
+    - show-details:
+      - 상세 항목이 나옴.
+      - ALWAYS, NEVER, WHEN_AUTHORIZED
+  기본 헬스 정보들.
+    - https://docs.spring.io/spring-boot/reference/actuator/endpoints.html#actuator.endpoints.health.auto-configured-health-indicators
+    - 안쓰고 있는 건 안나옴.
+    - db 헬스 정보는 DataSourceHealthIndicator.java 를 사용하고 있음.
+  커스텀 헬스엔드포인트 실습
+    - MyCustomHealthIndicator.java
+    - 왜하냐?
+      - 상용엔드포인트를 구현해야하는데 지원하는게 없다면, 내가 직접 만들어서 제공한다!
+    - HealthIndicator.class 의 health() 함수를 오버라이드 해야 함.
+    - HealthIndicator 를 제외한 "MyCustom" 이 이름으로 됨. (공식 가이드)
+    - 전체 health status 는 components 중 하나가 down이면 down으로 됨.
+      - down 이면 http reponse status code: 503
+    - DataSourceHealthIndicator 는 누가 Bean 생성해주냐?
+      - 생성자에 블랙포인트 걸어두고 디버그!
+      - DataSourceHealthContributorAutoConfiguration 이 Bean으로 만들어줌.
+      - j2, jpa 디펜던시 추가.
+
+6. 인포 엔드포인트.
+  다섯가지 기본 제공.
+    - https://docs.spring.io/spring-boot/reference/actuator/endpoints.html#actuator.endpoints.info.auto-configured-info-contributors
+  변수 입력하기
+    - @xxxx.xxxx@ 형태, gradle은 ${xxx.xxx}
+    - 공식 가이드. springboot 에서 지원하는 거임. actuator 전용이 아님.
+    - actuator.env 에 actuator.env.info 로도 표현됨.
+    - management.endpoint.env.show-values 로 value 볼 수 있음.
+  선결 조건 git
+    - https://docs.spring.io/spring-boot/how-to/build.html#howto.build.generate-git-info
+    - pom.xml plug-in 추가.
+    - Maven.actuator-demo.plugin.git-commit-id.git-commit-id:revision 더블클릭!
+    - target.classes 아래 git.properties 파일이 생성되어야 함.
+    - info.git.mode: FULL 로 정보를 다 보이게 할 수 있다.
+  선결 조건 build
+    - https://docs.spring.io/spring-boot/docs/3.0.4/reference/html/howto.html#howto.build.generate-info
+    - pom.xml plug-in 추가.
+    - Maven.actuator-demo.plugin.spring-boot.spring-boot:build-info 더블클릭!
+    - target.classes.META-INF 아래 build-info.properties 파일이 생성되어야 함.
+    - git.build 도 있음. 헷갈리지마시길.
+  커스텀 인포 엔드포인트 실습.
+    - MyCustomInfoContributor.java
+    - Contributor 를 제외한 "MyCustomInfo" 이 이름으로 됨. (공식 가이드)
