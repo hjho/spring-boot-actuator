@@ -145,3 +145,51 @@
   커스텀 인포 엔드포인트 실습.
     - MyCustomInfoContributor.java
     - Contributor 를 제외한 "MyCustomInfo" 이 이름으로 됨. (공식 가이드)
+
+7. 메트릭스 엔드포인트
+    가장 중요한~~!
+      - http://localhost:8080/actuator/metrics/process.cpu.usage
+      - https://docs.spring.io/spring-boot/reference/actuator/metrics.html#actuator.metrics.supported
+      - 일반적으로 통합 모니터링을 구출. 몽땅 다 모아서, 한번에 보게,,,
+      - 마이크로미터의 공식 가이드를 참고해야 함.
+        - https://micrometer.io/docs/concepts
+    외부 모니터링 시스템과의 연동
+      - datadog, elastic, prometheus, stackdriver, dynatrace, influx
+        - datadog 에는  json(예) 형태로 metric 정보를 전달해야 하고,
+        - elastic 에는 xml(예) 형태로 전달해야 하고,
+        - prometheus 에는 json, xml 도 아닌 proemtheus 자체 포맷으로 전달해야 하고,
+        - 또 다른 시스템에는 tcp로 데이터를 push해야 할수도 있고,
+        - 또 다른 어떤 시스템에는 polling 해야 할수도 있고...
+      - spring 에서는 actuator 를 통해 이런 다양한 프로토콜과 쉽게 연동이 가능하도록 지원해주고 있습니다.
+        - https://docs.spring.io/spring-boot/reference/actuator/metrics.html#actuator.metrics.export.elastic
+    커스텀 메트릭스 엔드포인트 실습.
+      - 메트릭스는 커스텀을 만드는게 좋다.
+      - 요청건수, 처리건수, 주문건수 등등
+      - 이러는 애를 통합 모니터링으로 써야함
+      - https://docs.spring.io/spring-boot/reference/actuator/metrics.html#actuator.metrics.registering-custom
+      - MyStockManager.java
+      - MyStockMeterBinderConfig.java
+
+  8. 매트릭스 엔트포인트 - 카운터
+    공식가이드
+      - https://micrometer.io/docs/concepts#_counters
+    Counter란.
+      - Counter 는 이름 그대로 횟수를 세어 metric 으로 제공합니다.
+      - 횟수이므로 1, 2, 100, 3000 처럼 자연수만 가능하지 1.3 처럼 소수나 -100 처럼 음수는 불가능합니다.
+      - 일반적으로 cache hit 에 대한 누적 counter, http request 누적 횟수 counter 와 같이
+      - 지금까지 특정 이벤트가 몇번 발생했는지를 누적값으로 제공할때 Counter 를 사용하면 됩니다.
+    카운터 실습
+      - CounterController.java
+      - MyHttpRequestManager.java
+    펑션 카운터 실습
+      - 보통은 filter나 interceptor를 통해 특정 URL에 사용하긴 함.
+      - 주로 FunctionCounter.builder 방식을 많이 사용함.
+      - CounterController.java
+      - MyHttpRequestManagerWithoutMicrometer.java
+      - MyFunctionCounterConfig.java
+      - CounterConfigWithMeterBinder.java
+    @Aspect @Counted 카운터 실습.
+      - CounterController.java
+
+
+

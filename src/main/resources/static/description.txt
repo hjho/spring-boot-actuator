@@ -170,27 +170,27 @@
       - MyStockManager.java
       - MyStockMeterBinderConfig.java
 
-  8. 매트릭스 엔트포인트 - 카운터
-    공식가이드
-      - https://micrometer.io/docs/concepts#_counters0
-    Counter란.
-      - Counter 는 이름 그대로 횟수를 세어 metric 으로 제공합니다.
-      - 횟수이므로 1, 2, 100, 3000 처럼 자연수만 가능하지 1.3 처럼 소수나 -10 처럼 음수는 불가능합니다.
-      - 일반적으로 cache hit 에 대한 누적 counter, http request 누적 횟수 counter 와 같이
-      - 지금까지 특정 이벤트가 몇번 발생했는지를 누적값으로 제공할때 Counter 를 사용하면 됩니다.
-    카운터 실습
-      - CounterController.java
-      - MyHttpRequestManager.java
-    펑션 카운터 실습
-      - 보통은 filter나 interceptor를 통해 특정 URL에 사용하긴 함.
-      - 주로 FunctionCounter.builder 방식을 많이 사용함.
-      - CounterController.java
-      - MyHttpRequestManagerWithoutMicrometer.java
-      - MyFunctionCounterConfig.java
-      - CounterConfigWithMeterBinder.java
-    @Aspect @Counted 카운터 실습.
-      - CounterController.java
-      - CountConfig.java
+8. 매트릭스 엔트포인트 - 카운터
+  공식가이드
+    - https://micrometer.io/docs/concepts#_counters0
+  Counter란.
+    - Counter 는 이름 그대로 횟수를 세어 metric 으로 제공합니다.
+    - 횟수이므로 1, 2, 100, 3000 처럼 자연수만 가능하지 1.3 처럼 소수나 -10 처럼 음수는 불가능합니다.
+    - 일반적으로 cache hit 에 대한 누적 counter, http request 누적 횟수 counter 와 같이
+    - 지금까지 특정 이벤트가 몇번 발생했는지를 누적값으로 제공할때 Counter 를 사용하면 됩니다.
+  카운터 실습
+    - CounterController.java
+    - MyHttpRequestManager.java
+  펑션 카운터 실습
+    - 보통은 filter나 interceptor를 통해 특정 URL에 사용하긴 함.
+    - 주로 FunctionCounter.builder 방식을 많이 사용함.
+    - CounterController.java
+    - MyHttpRequestManagerWithoutMicrometer.java
+    - MyFunctionCounterConfig.java
+    - CounterConfigWithMeterBinder.java
+  @Aspect @Counted 카운터 실습.
+    - CounterController.java
+    - CountConfig.java
 
 
 
