@@ -179,11 +179,18 @@
     - 일반적으로 cache hit 에 대한 누적 counter, http request 누적 횟수 counter 와 같이
     - 지금까지 특정 이벤트가 몇번 발생했는지를 누적값으로 제공할때 Counter 를 사용하면 됩니다.
   카운터 실습
+    - 보통은 filter나 interceptor를 통해 특정 URL에 사용하긴 함.
+    - 주로 FunctionCounter.builder 방식을 많이 사용함.
+    - 만드는 방법 설명
+      1. Manager 로 실행하는 함수를 만든다.
+      2. @Configuration @PostConstruct-Counter 를 이용해서 카운터를 생성한다.
+      3. @Configuration @PostConstruct-FunctionCounter 를 이용해서 카운터를 생성한다.
+      4. 또는 @Configuration @Bean-MeterBinder 를 이용해서 카운터를 생성한다.
+      5. 또는 CountedAspect @Aspect @Counted 를 이용해서 카운터를 생성한다.
+      6. http://localhost:8080/actuator/metrics/my.function.counter 에서 확인 한다.
     - CounterController.java
     - MyHttpRequestManager.java
   펑션 카운터 실습
-    - 보통은 filter나 interceptor를 통해 특정 URL에 사용하긴 함.
-    - 주로 FunctionCounter.builder 방식을 많이 사용함.
     - CounterController.java
     - MyHttpRequestManagerWithoutMicrometer.java
     - MyFunctionCounterConfig.java
@@ -213,8 +220,35 @@
     - thread count 라고 해서 Counter 를 쓰는게 맞지 않냐? 라고 생각할 수 있으나
     - 사용중인 thread count는 커졌다 작아졌다 할 수 있으므로 Gauge 가 맞습니다.
   게이지 실습.
+    - 만드는 방법 설명
+      1. Manager 로 실행하는 함수를 만든다.
+      2. @Configuration @PostConstruct 를 이용해서 게이지를 생성한다.
+      3. 또는 @Configuration @Bean-MeterBinder 를 이용해서 게이지를 생성한다.
+      4. http://localhost:8080/actuator/metrics/my.queue.size 에서 확인 한다.
     - QueueManager.java
     - GaugeConfig.java
     - GaugeConfigWithMeterBinder.java
 
-
+11. 매트릭스 엔드포인트 - 타이머
+  Timer란.
+    - 이름 그대로 시간을 측정하는 metric 입니다.
+  타이머 실습.
+    - 만드는 방법 설명
+      1. @Configuration @Bean-Timer 를 이용해서 타이머를 생성한다.
+      2. Manager + FunctionTimer.builder 를 이용하여 타이머를 생성.
+      3. timer.record 를 이용해서 타이머를 실행.
+      4. Timer.Sample 를 이용해서 개별 타이머를 실행.
+      5. @Timed 를 이용해서 타이머를 실행.
+      5. http://localhost:8080/actuator/metrics/my.timer 에서 확인 한다.
+    - TimerConfig.java
+    - TimerController.java
+  개별 타이머 실습.
+    - Timer.Sample 을 사용해서 개별적인 비즈니스 로직으로 만들 수 있음.
+  @Aspect @Timed 타이머 실습.
+    - @Timed 를 구현하려면 TimedAspect 빈을 구현해야함.
+    - TimedConfiguration.java
+    - TimerController.java
+  FunctionTimer 타이머 실습
+    - FunctionTimerConfig.java
+  MeterBinder 타이머 실습
+    -
