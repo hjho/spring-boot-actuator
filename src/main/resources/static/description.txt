@@ -254,3 +254,19 @@
   MeterBinder 타이머 실습
     - TimerConfigMeterBinder.java
     - MyTimerManager.java
+
+12. 메트릭스 정리.
+  https://semtul79.tistory.com/22
+  - 어노테이션 지원
+    - @Counted, @Timed, 게이지는 없음!
+  - 스프링에서 관리하는 메트릭스.
+    - Counter.increment()
+    - Timer.timer()
+  - 직접 관리하는 메트릭스.
+    - FuncitonCounter.builder
+    - FunctionTimer.builder
+    - Gauge.builder (게이지는 그냥 게이지임)
+  - MeterBinder 를 이용한 메트릭스 등록.
+    - FuncitonCounter, FunctionTimer, Gauge
+  - 이름 기준.
+    - my.metrics.type
