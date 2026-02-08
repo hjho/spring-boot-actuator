@@ -193,7 +193,7 @@
     - CounterController.java
     - CountConfig.java
 
-9. TAG의 옵션.
+9. 매트릭스 TAG의 옵션.
   - http://localhost:8080/actuator/metrics/jvm.memory.max?tag=area:nonheap&tag=id:Compressed%20Class%20Space
   - tag를 활용한 querystring으로 heap 과 nonheap 을 구분해서 볼 수 있음.
   메트릭스 카운터 태그 실습
@@ -203,5 +203,18 @@
   메트릭스 카운터 태그 실습 with 어노테이션
     - TagController.java
     - http://localhost:8080/actuator/metrics/my.queue.counted?tag=method:pop
+    - push 와 pop 의 카운터는 서로 다른 카운터이다.
+    - Counter.builder 의 name, tags, baseUnit 등으로 별개의 카운터가 만들어짐.
+
+10. 매트릭스 엔드포인트 - 게이지.
+  Gauge란.
+    - Gauge 는 자동차 속도 계기판과 같이 커졌다 작아졌다 할 수 있는 값에 사용됩니다.
+    - 보통 cpu usage, mem usage, 사용중인 thread count, 사용중인 connection pool count 등에 사용됩니다.
+    - thread count 라고 해서 Counter 를 쓰는게 맞지 않냐? 라고 생각할 수 있으나
+    - 사용중인 thread count는 커졌다 작아졌다 할 수 있으므로 Gauge 가 맞습니다.
+  게이지 실습.
+    - QueueManager.java
+    - GaugeConfig.java
+    - GaugeConfigWithMeterBinder.java
 
 

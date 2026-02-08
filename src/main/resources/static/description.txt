@@ -179,11 +179,18 @@
     - 일반적으로 cache hit 에 대한 누적 counter, http request 누적 횟수 counter 와 같이
     - 지금까지 특정 이벤트가 몇번 발생했는지를 누적값으로 제공할때 Counter 를 사용하면 됩니다.
   카운터 실습
+    - 보통은 filter나 interceptor를 통해 특정 URL에 사용하긴 함.
+    - 주로 FunctionCounter.builder 방식을 많이 사용함.
+    - 만드는 방법 설명
+      1. Manager 로 실행하는 함수를 만든다.
+      2. @Configuration @PostConstruct-Counter 를 이용해서 카운터를 생성한다.
+      3. @Configuration @PostConstruct-FunctionCounter 를 이용해서 카운터를 생성한다.
+      4. 또는 @Configuration @Bean-MeterBinder 를 이용해서 카운터를 생성한다.
+      5. 또는 CountedAspect @Aspect @Counted 를 이용해서 카운터를 생성한다.
+      6. http://localhost:8080/actuator/metrics/my.function.counter 에서 확인 한다.
     - CounterController.java
     - MyHttpRequestManager.java
   펑션 카운터 실습
-    - 보통은 filter나 interceptor를 통해 특정 URL에 사용하긴 함.
-    - 주로 FunctionCounter.builder 방식을 많이 사용함.
     - CounterController.java
     - MyHttpRequestManagerWithoutMicrometer.java
     - MyFunctionCounterConfig.java
@@ -205,5 +212,21 @@
     - http://localhost:8080/actuator/metrics/my.queue.counted?tag=method:pop
     - push 와 pop 의 카운터는 서로 다른 카운터이다.
     - Counter.builder 의 name, tags, baseUnit 등으로 별개의 카운터가 만들어짐.
+
+10. 매트릭스 엔드포인트 - 게이지.
+  Gauge란.
+    - Gauge 는 자동차 속도 계기판과 같이 커졌다 작아졌다 할 수 있는 값에 사용됩니다.
+    - 보통 cpu usage, mem usage, 사용중인 thread count, 사용중인 connection pool count 등에 사용됩니다.
+    - thread count 라고 해서 Counter 를 쓰는게 맞지 않냐? 라고 생각할 수 있으나
+    - 사용중인 thread count는 커졌다 작아졌다 할 수 있으므로 Gauge 가 맞습니다.
+  게이지 실습.
+    - 만드는 방법 설명
+      1. Manager 로 실행하는 함수를 만든다.
+      2. @Configuration @PostConstruct 를 이용해서 게이지를 생성한다.
+      3. 또는 @Configuration @Bean-MeterBinder 를 이용해서 게이지를 생성한다.
+      4. http://localhost:8080/actuator/metrics/my.queue.size 에서 확인 한다.
+    - QueueManager.java
+    - GaugeConfig.java
+    - GaugeConfigWithMeterBinder.java
 
 
