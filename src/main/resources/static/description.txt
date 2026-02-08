@@ -189,8 +189,21 @@
     - MyFunctionCounterConfig.java
     - CounterConfigWithMeterBinder.java
   @Aspect @Counted 카운터 실습.
+    - @Counted 를 구현하려면 CountedAspect 빈을 구현해야함.
     - CounterController.java
     - CountConfig.java
 
+9. 매트릭스 TAG의 옵션.
+  - http://localhost:8080/actuator/metrics/jvm.memory.max?tag=area:nonheap&tag=id:Compressed%20Class%20Space
+  - tag를 활용한 querystring으로 heap 과 nonheap 을 구분해서 볼 수 있음.
+  메트릭스 카운터 태그 실습
+    - MyQueueManagerWithTags.java
+    - TagController.java
+    - http://localhost:8080/actuator/metrics/my.queue.counter?tag=type:push
+  메트릭스 카운터 태그 실습 with 어노테이션
+    - TagController.java
+    - http://localhost:8080/actuator/metrics/my.queue.counted?tag=method:pop
+    - push 와 pop 의 카운터는 서로 다른 카운터이다.
+    - Counter.builder 의 name, tags, baseUnit 등으로 별개의 카운터가 만들어짐.
 
 
