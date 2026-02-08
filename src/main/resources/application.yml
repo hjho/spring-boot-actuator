@@ -1,6 +1,11 @@
 spring:
   application:
     name: actuator-demo
+  boot:
+    admin:
+      client:
+        period: 1000ms
+        url: http://127.0.0.1:9090
 
 logging:
   level:
